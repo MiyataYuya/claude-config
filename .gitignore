@@ -1,0 +1,20 @@
+# claude-config リポジトリ用 .gitignore
+# 使い方: このファイルを claude-config リポジトリ直下に .gitignore としてコピーする
+
+# OS由来のゴミファイル
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 誤って持ち込みがちな機密情報・端末固有ファイル
+.claude.json
+*.token
+*.credentials
+*credentials*.json
+
+# エディタ系
+.vscode/
+.idea/
+
+# バックアップファイル（セットアップ時に作成したもの）
+*.bak
