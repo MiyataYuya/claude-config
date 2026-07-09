@@ -71,8 +71,44 @@ New-Item -ItemType SymbolicLink -Path "$HOME\.codex\AGENTS.md"      -Target "$HO
 退避した `*.bak` に**このリポジトリに無い現行情報**が残っていないか確認し、あればリポジトリ側へ取り込んで
 commit・push する。問題なければ `*.bak` は削除してよい。
 
+## クラウドセッションへの展開（スマホ / Claude Code on the web）
+
+クラウドセッションは毎回まっさらなコンテナで起動し、ユーザースコープ設定（`~/.claude` / `~/.codex`）は
+同期されない（読まれるのはリポジトリにコミットされた設定のみ）。そこで環境（Environment）の
+**セットアップスクリプト**（Claude Code 起動前に実行される）で本リポジトリを clone し、
+`scripts/bootstrap-cloud.sh` が PC と同じ symlink 構成をコンテナ内に再現する。
+個人ルールは各プロジェクト CLAUDE.md の `@~/.codex/AGENTS.md` import が解決することで効く。
+`settings.json`（permissions / model）はクラウド側の管理設定が優先されるため対象外。
+
+### 設定手順（一度だけ）
+1. claude.ai/code → 環境セレクタ（クラウドアイコン）→ 対象環境にホバー → 設定アイコンで環境設定を開く
+2. **Environment variables** に `GH_TOKEN=<本リポジトリ読み取り可のPAT>` を1行追加（クォート不要）。
+   本リポジトリが private の間は必須（セットアップスクリプトはセッションの GitHub 認証プロキシより前に
+   走るため、認証は PAT で行う）。public 化すれば不要
+3. **Setup script** に以下を設定:
+
+```bash
+#!/bin/bash
+git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/MiyataYuya/claude-config.git" ~/claude-config 2>/dev/null || true
+bash ~/claude-config/scripts/bootstrap-cloud.sh
+```
+
+4. 各プロジェクトリポジトリの CLAUDE.md 冒頭に `@~/.codex/AGENTS.md` を1行追加する。
+   PC では既存 symlink が、クラウドではセットアップスクリプトが置いたファイルが解決する
+   （import 先が無い環境では import は未解決のまま無視されることをクラウドセッション上で確認済み。
+   公式ドキュメント上は未記載）
+
+### 運用メモ
+- 環境スナップショットは**約7日キャッシュ**され、その間は新セッションでもセットアップスクリプトは
+  再実行されない → ルール変更が即座には反映されない。即時反映したいときはセットアップスクリプトを
+  編集して保存する（スクリプト変更・許可ホスト変更でキャッシュが再構築される）
+- 検証: 新しいクラウドセッションで `ls -la ~/.claude ~/.codex` を実行し、symlink と
+  プロジェクト CLAUDE.md の import 解決（個人ルールが効いているか）を確認する
+
 ## 経緯メモ
 - 2026-07-06: Git方式で設計、職場PCで初期構築（`Initial Claude Code config`）。
 - 2026-07-06 以降: 職場PCを `@~/.codex/AGENTS.md` import＋`docs/` 構成に刷新。
 - 2026-07-09: `codex/AGENTS.md` と `docs/` を同期対象に追加、壊れた `agents` symlink を除去。
   自宅PC（旧CLAUDE.md のまま Drive スナップショット運用だった）を本リポジトリ運用へ移行（手順B）。
+- 2026-07-09: クラウドセッション（スマホ / Claude Code on the web）でも個人ルールを効かせるため
+  `scripts/bootstrap-cloud.sh` を追加。環境のセットアップスクリプトから呼び出す。
