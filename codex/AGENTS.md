@@ -23,10 +23,15 @@
 ## ワークフロー原則
 - 非自明なタスクは計画モード（Claude: Plan Mode / Codex: plan）で計画してから実装
 - 長時間セッションは品質劣化。実装の切れ目で分割し、進捗はPlan/外部ファイルに残す
+- `/context` でトークン消費を監視。劣化兆候（コンテキスト使用率が高い／同じ誤りの反復／指示の取りこぼし）が出たら `/rewind` またはセッション切替
 - 調査・探索はサブエージェントに委譲し、メインコンテキストを汚さない
 - サブエージェントに「複数の子調査を並行起動してまとめる」役目を持たせない。子エージェントが完了しても親が待機中に再開("from transcript")されると受信済み結果を見失うことがある。並行調査はメインセッションから直接ファンアウトする
 - 既存の解決策を先に探す（Context7・コードベース検索）
 - substantial なタスクの effort/オーケストレーション（solo/subagent/workflow/ultracode）選択前に `~/.claude/docs/effort-calibration.md`（effort校正 playbook）を参照。タスク完了時は `retrospect` skill（`/retrospect`）で振り返り、教訓を同 playbook に追記
+
+## 学習の蓄積
+- 修正・指摘を受けたら auto memory に学習を記録する
+- 繰り返す失敗パターンは明文化し、ルール（本ファイル/docs/rules）またはskillに落とす
 
 ## 開発スタイル
 - TDD: テストを先に書き、実装はテストを通すことを目標にする
@@ -58,6 +63,7 @@
 ## 参考資料
 - `~/.claude/deep-research-report.md` — Claude Code実務運用調査（CLAUDE.md設計・マルチエージェント・コンテキスト管理）
 - `~/.claude/deep-research-report-instruction-bestpractice.md` — CLAUDE.md/AGENTS.md ベストプラクティス調査（2026-06）。**repo の CLAUDE.md / AGENTS.md を新規作成・改訂する際は本レポートを参照する**（薄い索引＋docs/rules/skills 分割、Done条件、トークン設計）
+- `~/.claude/docs/claude-code-operations-guide.md` — Claude Code実務運用調査レポート（/init時のCLAUDE.md・ディレクトリ設計、skillの最小骨子とdescription、Subagents vs Agent Teams、hooks/permissions/MCP設定の参考）
 - Google Engineering Practices: https://google.github.io/eng-practices/
 - Microsoft Code-with Engineering Playbook: https://github.com/microsoft/code-with-engineering-playbook
 
