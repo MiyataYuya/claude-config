@@ -15,7 +15,7 @@
 | `settings.json` | `~/.claude/settings.json` | ユーザー設定。`enabledPlugins` / permissions / model / UI |
 | `CLAUDE.md`     | `~/.claude/CLAUDE.md`     | Claude Code 固有指示（本体は下の AGENTS.md を import） |
 | `codex/AGENTS.md` | `~/.codex/AGENTS.md`    | **個人ルールの単一ソース**。CLAUDE.md が `@~/.codex/AGENTS.md` で参照 |
-| `docs/`         | `~/.claude/docs/`         | 参照ドキュメント（effort-calibration / pr-practices / writing-rules） |
+| `docs/`         | `~/.claude/docs/`         | 参照ドキュメント（effort-calibration のみ。揮発しやすい詳細を置く） |
 | `skills/`       | `~/.claude/skills/`       | ユーザースキル |
 | `commands/`     | `~/.claude/commands/`     | カスタムスラッシュコマンド |
 
@@ -112,3 +112,6 @@ bash ~/claude-config/scripts/bootstrap-cloud.sh
   自宅PC（旧CLAUDE.md のまま Drive スナップショット運用だった）を本リポジトリ運用へ移行（手順B）。
 - 2026-07-09: クラウドセッション（スマホ / Claude Code on the web）でも個人ルールを効かせるため
   `scripts/bootstrap-cloud.sh` を追加。環境のセットアップスクリプトから呼び出す。
+- 2026-07-10: 陳腐化対策として docs を整理。安定ルール（writing-rules / pr-practices）は
+  AGENTS.md へ統合し、揮発しやすい `claude-code-operations-guide.md` は削除。`docs/` は
+  実態が更新される `effort-calibration.md` のみ残す（コールドで腐るファイルを持たない方針）。

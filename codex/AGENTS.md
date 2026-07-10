@@ -1,74 +1,30 @@
 # User-Scope エージェント契約 (AGENTS.md)
 
-全エージェント共通の個人ルールの**単一ソース**。Codex は本ファイルを直接読み、Claude Code は `~/.claude/CLAUDE.md` が `@~/.codex/AGENTS.md` で import する。
-このファイルは"索引"。長い理由・具体例・全手順は `~/.claude/docs/` に分離する。
+全エージェント共通の個人ルールの**単一ソース（索引）**。Codex は本ファイルを直接読み、Claude Code は `~/.claude/CLAUDE.md` の `@` import で読む。安定ルールは本ファイルに直書きし、揮発しやすい詳細のみ `~/.claude/docs/` に置く。
 
-## 言語
-- 常に日本語で会話する
+## 必須の振る舞い
+- 会話は常に日本語
+- **嘘・おもねり・推測を書かない**: 未確認事項を断定形で書かない／同調のために不整合な要件・ドキュメントを書かない（書く前にトートロジー・用語誤用・既出前提との矛盾を検証）／曖昧な引用元は曖昧なまま保ち推測で肉付けしない／複数ドキュメント併記を片方だけ「現状」と決めつけない
+- リスク判定・ステータス報告（「問題ない」「devにある」「再現する/しない」等）は該当コマンド（curl/テスト/git diff/DBクエリ）を自分で実行し、出力を証拠に示してから下す
+- 設計議論中は「実装して」と言われるまでコード変更を提案しない
+- 実装前に確認: 対象ブランチ / モジュール / MVPスコープ。不明なら仮定せず確認
 
-## コミュニケーションスタイル
-- 設計・アーキテクチャの説明は具体的に（ファイルパス・関数名・コード例）。抽象的な説明は禁止
-- 設計議論中はコード変更・リポジトリ変更を提案しない。「実装して」と明示されるまで議論モードを維持
-
-## 文章・要件記述の規律
-詳細・理由・具体例 → `~/.claude/docs/writing-rules.md`（要件・ドキュメント・PR本文を書く前に参照）
-- **反おもねり**: ユーザー同調のために論理的に不整合な要件・ドキュメントを書かない。まとめる前に矛盾・トートロジー・用語誤用を検証し、あれば指摘してから書く
-- **推測を書かない**: 確認できていない事項・推測をドキュメント/コメント/PR本文/要件に書かない。曖昧な引用元は曖昧なまま保つ。不明点は「要確認」と明示
-- **嘘禁止**: 確認していない/誤った事実を断定形で書かない。「現状」「既存」「実装済み」等のラベルは実態確認後に付ける。リスク判定・ステータス報告は該当コマンドを自分で実行し、出力を証拠として示してから行う
-
-## 実装前チェック
-- 実装開始前に確認: (1) 対象ブランチ (2) 対象モジュール/サービス (3) MVPスコープ
-- 前提が不明なら仮定で進めず確認
-
-## ワークフロー原則
-- 非自明なタスクは計画モード（Claude: Plan Mode / Codex: plan）で計画してから実装
-- 長時間セッションは品質劣化。実装の切れ目で分割し、進捗はPlan/外部ファイルに残す
-- `/context` でトークン消費を監視。劣化兆候（コンテキスト使用率が高い／同じ誤りの反復／指示の取りこぼし）が出たら `/rewind` またはセッション切替
-- 調査・探索はサブエージェントに委譲し、メインコンテキストを汚さない
-- **タスクに合ったモデルを使う**(Fableはトークン消費が激しい): 機械的作業(build/push・計測ループ・API実査・ログ収集・コード転記)は sonnet/haiku サブエージェントへ、文書ドラフトは opus へ(メインが事実チェック)。メイン(Fable/Opus)は設計判断・承認手渡し・結果解釈・揮発性証拠の一発取得に限定。**フェーズ境界(計画→実装→デプロイ→検証→文書化)ごとに執行者を決めてから着手し、機械作業をメインで3連続直実行したら violation として残りを委譲する**(2026-07-10、詳細と実証は effort-calibration.md)
-- サブエージェントに「複数の子調査を並行起動してまとめる」役目を持たせない。子エージェントが完了しても親が待機中に再開("from transcript")されると受信済み結果を見失うことがある。並行調査はメインセッションから直接ファンアウトする
+## 進め方
+- 非自明なタスクは計画モードで計画してから実装。長時間セッションは切れ目で分割し進捗を残す。劣化兆候が出たら `/rewind` かセッション切替
+- 調査・機械作業（build/計測/API実査/ログ収集/転記）はサブエージェントへ委譲しメインを汚さない。effort/オーケストレーション選択と振り返り → docs/effort-calibration.md（`/retrospect`）
 - 既存の解決策を先に探す（Context7・コードベース検索）
-- substantial なタスクの effort/オーケストレーション（solo/subagent/workflow/ultracode）選択前に `~/.claude/docs/effort-calibration.md`（effort校正 playbook）を参照。タスク完了時は `retrospect` skill（`/retrospect`）で振り返り、教訓を同 playbook に追記
+- 修正・指摘を受けたら auto memory に記録。反復する失敗はルール/skillに落とす
 
-## 学習の蓄積
-- 修正・指摘を受けたら auto memory に学習を記録する
-- 繰り返す失敗パターンは明文化し、ルール（本ファイル/docs/rules）またはskillに落とす
+## 開発・PR・完了
+- TDD／`gh` CLI優先／コミットは「なぜ」を書く。リファクタリングと振る舞い変更を同一PRに混ぜない
+- コードヘルスの純増で判断（過剰実装・スコープ外の作り込みを避ける）。技術判断は好みでなく事実・原則で下す
+- PRは小さく自己完結（目安 ~100行、~1000行/50ファイル超は過大）。本文1行目は命令形で具体的に要約。セルフレビュー＋CI（lint/ビルド/テスト）通過後に出す
+- レビュー指摘には必ず応答（修正=resolve／非対応=理由付き won't fix／スコープ外は別ワークアイテム化）
+- **PRレビュー依頼の結果は必ずPRコメントに投稿**（1指摘=1スレッド・対象ファイル/行を指定・`[Tier1:修正必須]/[Tier2:推奨]/[Tier3:cleanup]`＋失敗シナリオ、最後にサマリ1件）。投稿手段はプロジェクトのCLAUDE.mdで指定
+- **Done when**: (1) lint/型/テストがパス (2) 公開挙動変更はドキュメント反映 (3) 最終報告に「変更ファイル・実行した検証・残リスク」を明記。「できた/直った」の前に検証コマンドの出力を示す。PR/機能完了時に Azure DevOps ワークアイテムを更新
 
-## 開発スタイル
-- TDD: テストを先に書き、実装はテストを通すことを目標にする
-- GitHub操作は `gh` CLI を優先する
-- コミットメッセージは変更の「なぜ」を書く
-
-## エンジニアの心得 / PR
-詳細・全手順・出典 → `~/.claude/docs/pr-practices.md`（PR作成・レビュー時に参照）
-- コードヘルスの純増で判断。完璧主義・過剰実装(gold-plating)・スコープ外の作り込みを避ける
-- 技術判断は事実・原則で。好みで決めない。リファクタと振る舞い変更を同一PRに混ぜない
-- PRは小さく自己完結（~100行目安、~1000行/50ファイル超は過大）。1行目は命令形で具体的に要約
-- PRを出す前にセルフレビュー＋CI（lint/ビルド/テスト）通過。テストは同PRに含める。レビュー指摘は必ず応答（修正 or 理由付きwon't fix）
-- **PRレビューを依頼されたら結果は必ずPRコメントに投稿**（1指摘=1スレッド、Tierラベル＋失敗シナリオ）。投稿手段はプロジェクトの AGENTS.md / CLAUDE.md で指定
-
-## 完了条件 (Done when)
-- タスク完了 = (1) 関連 lint/型/テストがパス (2) 公開挙動を変えたらドキュメント反映済み (3) 最終報告に「変更ファイル一覧・実行した検証・残リスク」を明記
-- 「できた/直った/通る」と言う前に検証コマンドを自分で実行し出力を示す（証拠提示は「嘘禁止」に従う。重複回避のため詳細はそちら）
-
-## PR完了時チェック
-- PR作成・機能完了時にAzure DevOpsワークアイテムの残タスク確認とステータス更新。スキップ指示がない限り省略しない
-
-## DBスキーマ変更
-- スキーマ変更後は必ずマイグレーション/push（drizzle-kit push / prisma migrate 等）を実行し反映確認してから依存コードへ
-
-## 外部API連携
-- Notion APIは1リクエスト2000文字以下に分割（Cloudflareブロック回避）
-- Notion TODODBのアイテム本文には原則書き込まない。長文は別ページに作りリンク
-
-## 参考資料
-- `~/.claude/deep-research-report.md` — Claude Code実務運用調査（CLAUDE.md設計・マルチエージェント・コンテキスト管理）
-- `~/.claude/deep-research-report-instruction-bestpractice.md` — CLAUDE.md/AGENTS.md ベストプラクティス調査（2026-06）。**repo の CLAUDE.md / AGENTS.md を新規作成・改訂する際は本レポートを参照する**（薄い索引＋docs/rules/skills 分割、Done条件、トークン設計）
-- `~/.claude/docs/claude-code-operations-guide.md` — Claude Code実務運用調査レポート（/init時のCLAUDE.md・ディレクトリ設計、skillの最小骨子とdescription、Subagents vs Agent Teams、hooks/permissions/MCP設定の参考）
-- Google Engineering Practices: https://google.github.io/eng-practices/
-- Microsoft Code-with Engineering Playbook: https://github.com/microsoft/code-with-engineering-playbook
-
-## 環境メモ
-- OS: Windows 11。Bashツールは Git Bash / POSIX sh（bash構文で書く）。hook も PowerShell deny rule 回避のため bash
-- Bashツールの `cd` は永続化。後続は絶対パス or `git -C <repo>`（`cd subdir &&` 後の相対パスは二重探索で失敗）
-- Windows Bash で `TZ=Asia/Tokyo date` は無効。JSTは PowerShell の `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, "Tokyo Standard Time")`
+## プロジェクト個別
+- DBスキーマ変更後は必ず migration/push を実行→反映確認してから依存コードへ
+- Notion: 1リクエスト2000字以下に分割／TODODB本文には書かず長文は別ページ＋リンク
+- repo の CLAUDE.md/AGENTS.md を新規作成・改訂する**前**に `~/.claude/deep-research-report-instruction-bestpractice.md` を読む
+- 環境(Windows): hook は bash で書く（PowerShell deny rule 回避）／Bashツールの `cd` は永続化＝後続は絶対パス or `git -C <repo>`／JST は PowerShell `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, "Tokyo Standard Time")`
