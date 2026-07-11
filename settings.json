@@ -127,7 +127,6 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
   "hooks": {},
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
