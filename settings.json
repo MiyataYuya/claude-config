@@ -186,8 +186,9 @@
   "inputNeededNotifEnabled": false,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1756390508747
   },
-  "voiceEnabled": true
+  "enableArtifact": false
 }
