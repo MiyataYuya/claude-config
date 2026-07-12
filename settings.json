@@ -178,16 +178,16 @@
       }
     }
   },
+  "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "theme": "auto",
   "verbose": true,
   "remoteControlAtStartup": true,
-  "inputNeededNotifEnabled": false,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1756390508747
-  },
-  "enableArtifact": false
+  }
 }
