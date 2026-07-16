@@ -1,0 +1,25 @@
+{
+  "skill_name": "wafr-facilitator",
+  "prompts": [
+    {"text": "help me facilitate a WAFR with my customer tomorrow", "should_trigger": true},
+    {"text": "prepare questions for a Well-Architected review session", "should_trigger": true},
+    {"text": "I'm running a WA review with a customer, generate facilitator questions", "should_trigger": true},
+    {"text": "create a facilitation guide for a WAFR on a SaaS workload", "should_trigger": true},
+    {"text": "here's our architecture diagram, help me prepare WAFR questions", "should_trigger": true},
+    {"text": "generate conversational questions for each WA pillar for a gaming workload", "should_trigger": true},
+    {"text": "I need probing follow-ups for the Security pillar of a fintech workload", "should_trigger": true},
+    {"text": "prepare a WAFR session plan for a multi-tenant ECS application", "should_trigger": true},
+    {"text": "help me debrief after a WA review session, here are my notes", "should_trigger": true},
+    {"text": "the customer said they don't have backups, what should I probe next", "should_trigger": true},
+    {"text": "do a full Well-Architected review of my codebase", "should_trigger": false},
+    {"text": "analyze my Terraform for WA best practices", "should_trigger": false},
+    {"text": "teach me the Well-Architected pillars", "should_trigger": false},
+    {"text": "generate guardrails for my AWS account", "should_trigger": false},
+    {"text": "create an ADR for our database choice", "should_trigger": false},
+    {"text": "assess my workload against all 57 WA questions", "should_trigger": false},
+    {"text": "review my CDK code for security issues", "should_trigger": false},
+    {"text": "identify single points of failure in my infrastructure code", "should_trigger": false},
+    {"text": "optimize our AWS costs from this Terraform", "should_trigger": false},
+    {"text": "plan our migration from on-premises to AWS", "should_trigger": false}
+  ]
+}

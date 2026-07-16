@@ -1,0 +1,25 @@
+{
+  "skill_name": "migration-readiness",
+  "prompts": [
+    {"text": "assess our readiness to migrate to AWS", "should_trigger": true},
+    {"text": "evaluate our application for the 7 Rs of migration", "should_trigger": true},
+    {"text": "plan our on-premises to cloud migration", "should_trigger": true},
+    {"text": "determine if we should rehost, replatform, or refactor", "should_trigger": true},
+    {"text": "map dependencies for our migration wave planning", "should_trigger": true},
+    {"text": "assess migration risks and blockers", "should_trigger": true},
+    {"text": "evaluate our legacy application for cloud readiness", "should_trigger": true},
+    {"text": "create a migration plan for our data center workloads", "should_trigger": true},
+    {"text": "assess which applications are good candidates for lift-and-shift", "should_trigger": true},
+    {"text": "evaluate operational readiness for post-migration", "should_trigger": true},
+    {"text": "audit security controls and IAM policies", "should_trigger": false},
+    {"text": "reduce our AWS costs", "should_trigger": false},
+    {"text": "improve application performance", "should_trigger": false},
+    {"text": "identify reliability gaps in our existing AWS architecture", "should_trigger": false},
+    {"text": "reduce our carbon footprint", "should_trigger": false},
+    {"text": "review our CI/CD pipeline", "should_trigger": false},
+    {"text": "do a full WA review of our current AWS workload", "should_trigger": false},
+    {"text": "document our container orchestration decision as an ADR", "should_trigger": false},
+    {"text": "generate an architecture diagram", "should_trigger": false},
+    {"text": "evaluate our disaster recovery setup", "should_trigger": false}
+  ]
+}

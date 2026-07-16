@@ -1,0 +1,117 @@
+{
+  "skill_name": "wafr-facilitator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm facilitating a WAFR tomorrow for a SaaS multi-tenant e-commerce platform on AWS. They use ECS Fargate, Aurora PostgreSQL, ElastiCache, API Gateway, and CloudFront. Business-critical — handles payments. Help me prepare the Security pillar questions.",
+      "expected_output": "Facilitator cards for all 11 SEC questions adapted to SaaS multi-tenant e-commerce context, with conversational opening questions, probing follow-ups about tenant isolation and payment data, red flags, and what good looks like.",
+      "assertions": [
+        "Output contains facilitator cards for Security pillar questions (SEC 1 through SEC 11)",
+        "Opening questions are conversational and adapted to multi-tenant SaaS context — not verbatim WA tool text",
+        "Probing follow-ups reference tenant isolation, PCI/payment data protection, and shared infrastructure risks specific to multi-tenancy",
+        "Red flags section identifies concrete signals (e.g., shared DB schemas without RLS, IAM roles shared across tenants, plaintext payment data)",
+        "Each card includes a 'What good sounds like' section describing strong answers for this workload type",
+        "Questions reference specific services from the workload (ECS task roles, Aurora encryption, API Gateway authorizers, CloudFront signed URLs)"
+      ],
+      "process_assertions": [
+        "Cards are generated for a SINGLE pillar (Security) — does not produce all 6 pillars unprompted",
+        "Questions sound like a human conversation — no jargon-heavy compliance language",
+        "A pause/checkpoint is offered after generating the pillar",
+        "Workload-specific context (multi-tenant, payments) is woven into every card, not just mentioned once"
+      ],
+      "knowledge_assertions": [
+        {
+          "claim": "Tenant isolation is probed under SEC 3 (permissions/access management)",
+          "source": "AWS Well-Architected Security Pillar - SEC 3 / SaaS Lens",
+          "rationale": "Multi-tenant SaaS must ensure tenant data isolation — this is SEC 3's domain"
+        },
+        {
+          "claim": "Payment data encryption is addressed under SEC 8 (data protection at rest)",
+          "source": "AWS Well-Architected Security Pillar - SEC 8",
+          "rationale": "E-commerce with payment processing requires explicit data classification and encryption strategy"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Here's our architecture: single EC2 instance running a monolithic Java app, MySQL on RDS single-AZ, no backups, public S3 buckets, no WAF, no monitoring beyond basic CloudWatch. It's a customer-facing healthcare portal. Help me do a full pre-assessment from this description.",
+      "expected_output": "A complete per-pillar pre-assessment identifying critical reliability risks (SPOFs, single-AZ), security gaps (public S3, no WAF), operational gaps (no monitoring), performance concerns (single instance), cost waste, and sustainability issues, with FMEA scoring for the most critical items.",
+      "assertions": [
+        "Data flow map is produced showing the request path through EC2, RDS, S3",
+        "Reliability SEEMS analysis identifies: single EC2 as SPOF, single-AZ RDS as SPOF, no backups as data loss risk",
+        "Security threat surface identifies: public S3 buckets (data exposure), no WAF (unprotected endpoint), healthcare data without encryption controls",
+        "Operational readiness flags: no monitoring, no runbooks, no deployment automation",
+        "FMEA RPN scores are computed for at least the top 3 critical findings",
+        "Healthcare-specific compliance concerns are raised (PHI/HIPAA sensitivity)",
+        "Output recommends pillar priority order based on findings severity"
+      ],
+      "process_assertions": [
+        "Pre-assessment covers ALL six pillars, not just reliability",
+        "Findings are concrete and reference specific components from the architecture (not generic best practices)",
+        "A session plan is produced with recommended pillar order and time allocation",
+        "Data plane vs control plane concern is flagged for recovery mechanisms"
+      ],
+      "knowledge_assertions": [
+        {
+          "claim": "Single EC2 + single-AZ RDS are classified as critical SPOFs with high FMEA severity",
+          "source": "AWS Resilience Analysis Framework - SEEMS methodology",
+          "rationale": "Customer-facing healthcare portal with no redundancy has catastrophic impact on failure"
+        },
+        {
+          "claim": "Public S3 buckets with healthcare data are flagged as a critical security finding",
+          "source": "AWS Well-Architected Security Pillar - SEC 8 (data protection)",
+          "rationale": "Healthcare data (potential PHI) in publicly accessible storage is a regulatory and security emergency"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm mid-session and the customer just said: 'We have backups but we've never tested restoring them. We think they work.' This is for the Reliability pillar. What should I probe next?",
+      "expected_output": "Targeted follow-up probing questions about backup verification — RTO/RPO awareness, restore testing cadence, blast radius of data loss, and specific questions to get a falsifiable answer rather than 'we think it works'.",
+      "assertions": [
+        "Provides 3-5 specific follow-up questions that probe backup restoration capability",
+        "At least one question asks for a falsifiable answer (e.g., 'When was the last time you restored from backup to a clean environment?')",
+        "Assesses risk level of untested backups (should indicate High risk)",
+        "References the gap between 'having backups' and 'proven recovery capability'",
+        "Suggests concrete verification the facilitator can request (e.g., 'Can you show me the last restore test results?')",
+        "Does NOT lecture about best practices — provides actionable probing questions for the facilitator to use in conversation"
+      ],
+      "process_assertions": [
+        "Response is concise and immediately usable mid-session — not a full pillar regeneration",
+        "Questions are phrased as things the facilitator can say directly to the customer",
+        "Risk assessment is quick and clear (not a full FMEA analysis)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "We're running out of time — we have 20 minutes left and haven't covered Performance Efficiency or Sustainability. The workload is a real-time gaming backend with 100k concurrent players. Which questions matter most and what should I prioritize?",
+      "expected_output": "A time-aware prioritization of the most relevant Performance Efficiency questions for a gaming workload (latency, scaling, compute selection) with a recommendation to park or skip Sustainability given time constraints.",
+      "assertions": [
+        "Prioritizes 3-4 Performance Efficiency questions most relevant to real-time gaming (PERF 1 resource selection, PERF 2 compute, PERF 3 scaling, PERF 5 networking)",
+        "Explains WHY these questions matter for 100k concurrent players (latency sensitivity, burst scaling, compute-bound game loops)",
+        "Provides abbreviated facilitator questions — quick-hit versions, not full cards",
+        "Makes a clear recommendation about Sustainability (skip/defer vs quick 5-min pass)",
+        "Respects the 20-minute constraint — does not produce a full pillar's worth of content",
+        "Acknowledges the trade-off of reduced coverage and suggests documenting what was skipped"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Generate a debrief summary. During the session we found: no multi-AZ for the database, no WAF, shared SSH keys for all developers, deployments are manual rsync to production, no monitoring dashboards, and the team said 'we test backups annually.' The workload is a B2B SaaS invoicing platform.",
+      "expected_output": "A structured facilitator debrief with findings by severity, verification items, prioritized improvement plan, and flagged follow-up areas.",
+      "assertions": [
+        "Findings are categorized by severity: 🔴 High Risk items include single-AZ DB, shared SSH keys, no WAF, manual deployments",
+        "Includes 'Answers that need verification' section — flags 'annual backup testing' for evidence request",
+        "Improvement plan is prioritized by impact and effort (SSH keys and WAF are quick wins; multi-AZ is higher effort)",
+        "Acknowledges what the team is doing right (if anything inferable) or states nothing positive was identified",
+        "Identifies any pillars/questions that were not covered and need follow-up",
+        "Output is in the debrief format specified by the skill (severity groups, verification, improvement order, skipped items)"
+      ],
+      "process_assertions": [
+        "Debrief is based on the facilitator's session notes — does not invent findings beyond what was reported",
+        "B2B SaaS context shapes the severity assessment (customer data, SLA implications)",
+        "Manual deployment flagged under both Operational Excellence (no CI/CD) and Reliability (human error risk)"
+      ]
+    }
+  ]
+}

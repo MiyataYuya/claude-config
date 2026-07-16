@@ -127,6 +127,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {},
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
@@ -189,6 +190,5 @@
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1756390508747
-  },
-  "model": "claude-fable-5[1m]"
+  }
 }
