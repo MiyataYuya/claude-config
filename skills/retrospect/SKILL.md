@@ -75,7 +75,8 @@ Distill one reusable line: **"<condition> → <recommended effort/approach>, bec
 
 The playbook only stays useful if it stays short and true. When updating `~/.claude/docs/effort-calibration.md`:
 
-- **Merge, don't append blindly.** If a matching heuristic exists, sharpen it (tighten the condition, add a corroborating data point, update the date) instead of adding a near-duplicate.
+- **Merge, don't append blindly.** If a matching heuristic exists, sharpen it (tighten the condition, update the date) instead of adding a near-duplicate. Place new rules under the matching theme section (スカウト/着手前 / 実装オーケストレーション / レビュー / 検証 / Ops・デプロイ / 委譲の品質管理).
+- **Corroborate by tag, not narrative.** When a session confirms an existing rule, append only a `(YYYY-MM-DD caseID)` tag to its evidence list — plus at most a few words if the condition itself sharpened. Never append parenthetical case narratives; that habit once bloated the playbook to 33KB. Details belong in git history, not the playbook.
 - **Contradict openly.** If this session's evidence contradicts an existing heuristic, revise it and note the change — don't leave both.
 - **Trim.** Keep each heuristic to ~1-3 lines. If the file grows past a screenful, consolidate: prefer a few strong, general rules over many narrow ones. Drop rules that have never matched again.
 - **Date entries** so stale advice is visible. Use the actual date (ask/derive; don't invent).
