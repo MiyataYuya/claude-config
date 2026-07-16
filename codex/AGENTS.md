@@ -26,5 +26,5 @@
 ## プロジェクト個別
 - DBスキーマ変更後は必ず migration/push を実行→反映確認してから依存コードへ
 - Notion: 1リクエスト2000字以下に分割／TODODB本文には書かず長文は別ページ＋リンク
-- repo の CLAUDE.md/AGENTS.md を新規作成・改訂する**前**に `~/.claude/deep-research-report-instruction-bestpractice.md` を読む
+- repo の CLAUDE.md/AGENTS.md の新規作成・改訂は `claude-md-slimmer` スキルの原則に従う（薄い索引に保ち、詳細は docs/・rules/・skills へ外部化）
 - 環境(Windows): hook は bash で書く（PowerShell deny rule 回避）／Bashツールの `cd` は永続化＝後続は絶対パス or `git -C <repo>`／JST は PowerShell `[System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, "Tokyo Standard Time")`
