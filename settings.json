@@ -179,7 +179,6 @@
       }
     }
   },
-  "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "theme": "auto",
   "verbose": true,
@@ -188,6 +187,7 @@
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
+  "askUserQuestionTimeout": "never",
   "feedbackSurveyState": {
     "lastShownTime": 1756390508747
   }
