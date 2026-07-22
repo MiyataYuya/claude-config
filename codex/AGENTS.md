@@ -13,6 +13,8 @@
 - 非自明なタスクは計画モードで計画してから実装。長時間セッションは切れ目で分割し進捗を残す。劣化兆候が出たら `/rewind` かセッション切替
 - 大きめの設計・リファクタリングは実装前に Codex（`codex:rescue` 等）で第三者設計レビューを受ける（実装後に見つかると手戻りが大きい設計不備を事前検出）
 - 調査・機械作業（build/計測/API実査/ログ収集/転記）はサブエージェントへ委譲しメインを汚さない。**フェーズ境界（計画→実装→検証→文書化）で執行者を決め、メインで機械作業を3連続直実行したら残りを委譲**。effort/オーケストレーション選択と振り返り → docs/effort-calibration.md（`/retrospect`）
+- **サブエージェント起動時は model を必ず明示指定**（未指定 = main 継承 = 最高額。PreToolUse hook が deny する）: 転記/grep/網羅 Explore/機械作業 = sonnet、中間的な調査・実装 = opus、設計判断・レビュー・auth/security = fable。基準 → docs/effort-calibration.md 実装オーケストレーション節
+- **実質的なタスク完了時は `/retrospect`。目的は次回の effort 選択の較正であり、docs/effort-calibration.md（プレイブック）の更新が本体** — 感想でなくセッション実測（agent数/tokens/レビュー検出/手戻り）を証拠に各レバー（scout/実装/レビュー/検証）を過小・適正・過剰判定し、「条件 → 推奨 effort」の再利用可能な1行に蒸留してプレイブックへ反映する。更新なしの retrospect は無価値
 - 既存の解決策を先に探す（Context7・コードベース検索）
 - 修正・指摘を受けたら auto memory に記録。反復する失敗はルール/skillに落とす。セッション終了前に repo CLAUDE.md への学習反映を検討（`revise-claude-md`）
 

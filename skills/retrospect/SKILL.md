@@ -41,6 +41,7 @@ For each lever, rate **under-powered / appropriate / over-powered**, with the ev
 - **Implement** — right-sized, or gold-plated / under-built?
 - **Review** — did it catch a real defect you'd have shipped (worth it), or produce only nits (overkill)? A caught regression justifies a lot.
 - **Verify** — enough to be confident, or ceremonial / skipped where it mattered?
+- **Agent/model selection (MANDATORY — always review and report this, every retrospect)** — for EACH subagent spawned this session, was its model right for the task? List the spawns with actual vs. ideal model and a verdict. The default failure is spawning without a model param so it inherits the main model (= most expensive); flag every such case. Transcription / grep / exhaustive-read Explore / mechanical loops → sonnet (or haiku if trivial); design judgment / auth-security / review → top model. Moved-code diffs need lighter review than new code. Never omit this section — if no agents were spawned, say so explicitly.
 
 Be willing to say "over-powered" even about impressive-looking work. The whole value of this skill is catching over-spend, which flattery hides.
 
@@ -67,6 +68,8 @@ Distill one reusable line: **"<condition> → <recommended effort/approach>, bec
 - Implement: <under|appropriate|over> — <evidence>
 - Review: <under|appropriate|over> — <evidence>
 - Verify: <under|appropriate|over> — <evidence>
+
+**Agent/model selection** (MANDATORY — never omit): <per-spawn actual vs ideal model + verdict, or "no agents spawned">
 
 **Next time**: <the reusable heuristic line>
 ```

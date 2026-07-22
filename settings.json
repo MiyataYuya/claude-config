@@ -127,8 +127,22 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
-  "hooks": {},
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/require-agent-model.sh\"",
+            "shell": "bash",
+            "timeout": 10,
+            "statusMessage": "Checking agent model selection..."
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
@@ -179,6 +193,7 @@
       }
     }
   },
+  "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "theme": "auto",
   "verbose": true,
@@ -187,7 +202,6 @@
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "askUserQuestionTimeout": "never",
   "feedbackSurveyState": {
     "lastShownTime": 1756390508747
   }
