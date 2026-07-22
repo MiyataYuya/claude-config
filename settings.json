@@ -141,6 +141,30 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|Bash|Agent|Task|mcp__azure-devops__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/main-mutation-meter.sh\"",
+            "shell": "bash",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/phase-boundary-reminder.sh\"",
+            "shell": "bash",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {

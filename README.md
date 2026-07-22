@@ -18,11 +18,18 @@
 | `docs/`         | `~/.claude/docs/`         | 参照ドキュメント（effort-calibration のみ。揮発しやすい詳細を置く） |
 | `skills/`       | `~/.claude/skills/`       | ユーザースキル |
 | `commands/`     | `~/.claude/commands/`     | カスタムスラッシュコマンド |
-| `hooks/`        | `~/.claude/hooks/` 配下の**個別ファイル** | `settings.json` から参照される hook スクリプト（現在 `require-agent-model.sh` のみ） |
+| `hooks/`        | `~/.claude/hooks/` 配下の**個別ファイル** | `settings.json` から参照される hook スクリプト（下表の3本） |
+
+`hooks/` の内訳（いずれも `settings.json` に登録済み。委譲ルールの機械的強制が目的）:
+
+| スクリプト | イベント | 役割 |
+|---|---|---|
+| `require-agent-model.sh` | PreToolUse (`Agent\|Task`) | model 未指定の subagent spawn を deny（未指定 = main 継承 = 最高額） |
+| `main-mutation-meter.sh` | PostToolUse (mutation 系) | main での連続 mutation を数え、3回以上で委譲を促す nudge を注入 |
+| `phase-boundary-reminder.sh` | PostToolUse (`ExitPlanMode`) | 計画承認時に「各フェーズの執行者割当」を先に決めさせる |
 
 > `hooks/` はディレクトリごとではなく**ファイル単位でリンク**する。`~/.claude/hooks/` には
-> 端末ローカルの実験用 hook（`main-mutation-meter.sh` 等、`settings.local.json` から参照）が
-> 同居するため、ディレクトリを丸ごと差し替えるとそれらが消える。
+> 端末ローカルの実験用 hook を置くことがあり、ディレクトリを丸ごと差し替えると消えるため。
 > 同期対象は「`settings.json`（＝同期対象）が参照する hook」に限る。
 
 ### 同期しないもの（意図的に除外）
@@ -47,6 +54,20 @@ git -C ~/claude-config push
 
 `~/.claude` や `~/.codex` 配下の対象ファイルは symlink 経由でリポジトリ実体を指すので、
 編集は普段どおり行えば `claude-config` に反映される。
+
+> **注意: symlink が実ファイルに戻ることがある。**
+> 2026-07-22 に `~/.claude/settings.json` が symlink ではなく実ファイルになっており、
+> リポジトリ側と内容が乖離していた（PostToolUse hook 2本の登録がリポジトリに無かった）。
+> `settings.json` は Claude Code 自身が書き換える（permissions 追加・UI 設定変更など）ため、
+> 書き戻しでリンクが置き換わった可能性が高い。pull/push の前に確認する:
+>
+> ```bash
+> ls -la ~/.claude/settings.json ~/.claude/CLAUDE.md ~/.claude/skills ~/.claude/docs ~/.claude/commands
+> diff <(git -C ~/claude-config show HEAD:settings.json) ~/.claude/settings.json
+> ```
+>
+> 実ファイル化していたら、内容を確認のうえリポジトリへコピー → commit し、
+> 管理者権限 PowerShell で symlink を張り直す。
 
 ## 新しいPCのセットアップ（手順B）
 
@@ -75,7 +96,9 @@ New-Item -ItemType SymbolicLink -Path "$HOME\.codex\AGENTS.md"      -Target "$HO
 
 # hook はファイル単位（ディレクトリを丸ごとリンクしない。上の注記を参照）
 New-Item -ItemType Directory -Path "$HOME\.claude\hooks" -ErrorAction SilentlyContinue
-New-Item -ItemType SymbolicLink -Path "$HOME\.claude\hooks\require-agent-model.sh" -Target "$HOME\claude-config\hooks\require-agent-model.sh"
+foreach ($h in @("require-agent-model.sh","main-mutation-meter.sh","phase-boundary-reminder.sh")) {
+  New-Item -ItemType SymbolicLink -Path "$HOME\.claude\hooks\$h" -Target "$HOME\claude-config\hooks\$h"
+}
 ```
 
 退避した `*.bak` に**このリポジトリに無い現行情報**が残っていないか確認し、あればリポジトリ側へ取り込んで
