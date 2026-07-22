@@ -18,6 +18,12 @@
 | `docs/`         | `~/.claude/docs/`         | 参照ドキュメント（effort-calibration のみ。揮発しやすい詳細を置く） |
 | `skills/`       | `~/.claude/skills/`       | ユーザースキル |
 | `commands/`     | `~/.claude/commands/`     | カスタムスラッシュコマンド |
+| `hooks/`        | `~/.claude/hooks/` 配下の**個別ファイル** | `settings.json` から参照される hook スクリプト（現在 `require-agent-model.sh` のみ） |
+
+> `hooks/` はディレクトリごとではなく**ファイル単位でリンク**する。`~/.claude/hooks/` には
+> 端末ローカルの実験用 hook（`main-mutation-meter.sh` 等、`settings.local.json` から参照）が
+> 同居するため、ディレクトリを丸ごと差し替えるとそれらが消える。
+> 同期対象は「`settings.json`（＝同期対象）が参照する hook」に限る。
 
 ### 同期しないもの（意図的に除外）
 - 機密: `~/.claude/.credentials.json`, `~/.codex/auth.json`（`.gitignore` で保護）
@@ -66,6 +72,10 @@ New-Item -ItemType SymbolicLink -Path "$HOME\.claude\skills"        -Target "$HO
 New-Item -ItemType SymbolicLink -Path "$HOME\.claude\commands"      -Target "$HOME\claude-config\commands"
 New-Item -ItemType SymbolicLink -Path "$HOME\.claude\docs"          -Target "$HOME\claude-config\docs"
 New-Item -ItemType SymbolicLink -Path "$HOME\.codex\AGENTS.md"      -Target "$HOME\claude-config\codex\AGENTS.md"
+
+# hook はファイル単位（ディレクトリを丸ごとリンクしない。上の注記を参照）
+New-Item -ItemType Directory -Path "$HOME\.claude\hooks" -ErrorAction SilentlyContinue
+New-Item -ItemType SymbolicLink -Path "$HOME\.claude\hooks\require-agent-model.sh" -Target "$HOME\claude-config\hooks\require-agent-model.sh"
 ```
 
 退避した `*.bak` に**このリポジトリに無い現行情報**が残っていないか確認し、あればリポジトリ側へ取り込んで
